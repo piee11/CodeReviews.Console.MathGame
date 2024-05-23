@@ -1,0 +1,122 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <algorithm> // Untuk trim
+using namespace std;
+
+// Fungsi untuk menghapus whitespace dari awal dan akhir string
+string trim(const string& str) {
+    size_t first = str.find_first_not_of(' ');
+    if (string::npos == first) {
+        return str;
+    }
+    size_t last = str.find_last_not_of(' ');
+    return str.substr(first, (last - first + 1));
+}
+
+struct cinema {
+    string judul, genre, waktuTayang;
+    int kursi;
+};
+
+struct booking {
+    char judul_film[50];
+    int jumlahTiket, biaya, total, uang, kembalian;
+
+    int perkalian() {
+        return jumlahTiket * biaya;
+    }
+
+    int pengurangan() {
+        return uang - total;
+    }
+};
+
+int main() {
+    cinema film1, film2, film3, film4;
+    booking pesanan;
+
+    // Input film
+    film1.judul = "Menjelang ajal";
+    film1.genre = "Horror";
+    film1.waktuTayang = "12:00 WIB";
+    film1.kursi = 20;
+
+    film2.judul = "Vennom";
+    film2.genre = "Fiksi";
+    film2.waktuTayang = "14:35 WIB";
+    film2.kursi = 15;
+
+    film3.judul = "Possession";
+    film3.genre = "Horror";
+    film3.waktuTayang = "15:05 WIB";
+    film3.kursi = 25;
+
+    film4.judul = "Vina: Sebelum 7 Hari";
+    film4.genre = "Horror";
+    film4.waktuTayang = "13:45 WIB";
+    film4.kursi = 40;
+
+    cout << "\n=========================================================================================\n";
+    cout << "WELCOME TO CINEMA CUTIPIE\n";
+    cout << "\nEvery day only 35.000\n";
+    cout << "\n=========================================================================================\n";
+    cout << "| Judul Film | Genre | Waktu Tayang | Kursi Tersedia |\n";
+    cout << "\n=========================================================================================\n";
+    cout << "| " << film1.judul << " | " << film1.genre << " | " << film1.waktuTayang << " | " << film1.kursi << " |\n";
+    cout << "| " << film2.judul << " | " << film2.genre << " | " << film2.waktuTayang << " | " << film2.kursi << " |\n";
+    cout << "| " << film3.judul << " | " << film3.genre << " | " << film3.waktuTayang << " | " << film3.kursi << " |\n";
+    cout << "| " << film4.judul << " | " << film4.genre << " | " << film4.waktuTayang << " | " << film4.kursi << " |\n";
+
+    // Booking film
+    cout << "Masukkan pilihan anda!\n";
+    cout << "Film Yang Ingin Dipesan = ";
+    cin.ignore();
+    cin.getline(pesanan.judul_film, 50);
+    cout << "Berapa Tiket Yang Ingin Dipesan = ";
+    cin >> pesanan.jumlahTiket;
+
+    // Trim whitespace dari input
+    string selectedTitle = trim(pesanan.judul_film);
+
+    cinema* selectedFilm = nullptr;
+
+    // Cek film yang dipilih
+    if (selectedTitle == "Menjelang ajal") {
+        selectedFilm = &film1;
+    } else if (selectedTitle == "Vennom") {
+        selectedFilm = &film2;
+    } else if (selectedTitle == "Possession") {
+        selectedFilm = &film3;
+    } else if (selectedTitle == "Vina: Sebelum 7 Hari") {
+        selectedFilm = &film4;
+    }
+
+    if (selectedFilm != nullptr) {
+        if (pesanan.jumlahTiket <= selectedFilm->kursi) {
+            cout << "Harga 1 Tiket = ";
+            cin >> pesanan.biaya;
+
+            // Hitung total bayar
+            pesanan.total = pesanan.perkalian();
+            cout << "Total Bayar = " << pesanan.total << endl;
+
+            cout << "Uang yang dibayar = ";
+            cin >> pesanan.uang;
+
+            // Hitung kembalian
+            pesanan.kembalian = pesanan.pengurangan();
+            cout << "Kembalian = " << pesanan.kembalian << endl;
+
+            // Kurangi jumlah kursi
+            selectedFilm->kursi -= pesanan.jumlahTiket;
+            cout << "Jumlah kursi tersisa untuk film " << selectedFilm->judul << " adalah " << selectedFilm->kursi << endl;
+        } else {
+            cout << "Maaf, jumlah tiket yang dipesan melebihi jumlah kursi yang tersedia.\n";
+        }
+    } else {
+        cout << "Film yang dipilih tidak tersedia.\n";
+    }
+
+    return 0;
+}
